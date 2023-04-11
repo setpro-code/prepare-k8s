@@ -1,0 +1,17 @@
+---
+- name: install required packages
+  hosts: all
+  become: yes
+  tasks:
+    - name: install packages
+      yum:
+        name:
+          - kubelet 
+          - kubeadm
+          - kubectl
+        state: present
+    - name: enable kubelet service
+      service:
+        name: kubelet
+        enabled: yes
+        state: started  

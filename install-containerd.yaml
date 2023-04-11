@@ -1,0 +1,37 @@
+---
+- name: install containerd
+  hosts: all
+  become: yes
+  tasks:
+    - name: install yum package
+      yum:
+        name: yum-utils
+        state: present
+
+    - name: add repository
+      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: install containerd packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - containerd.io
+    
+    # - name: remove containerd default config
+    #   file:
+    #     path: /etc/containerd/config.toml
+    #     state: absent
+    - name: enable cri plugin 
+      lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: 'disabled_plugins'
+        line: ''
+        state: present
+      
+    - name: start and enable containerd service
+      service:
+        name: containerd
+        enabled: yes
+        state: restarted
+

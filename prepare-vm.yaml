@@ -1,0 +1,11 @@
+---
+- name: put ssh key
+  hosts: all
+  become: yes
+  tasks:
+     - name: put ssh key
+       lineinfile:
+         line: "{{lookup('file', '/root/.ssh/id_rsa.pub')  }}"
+         path: /root/.ssh/authorized_keys
+         state: present
+
